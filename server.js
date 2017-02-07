@@ -3,8 +3,9 @@ const port = process.env.PORT;
 const io = require('socket.io')(port || 3000);
 const shortId = require('shortid');
 var {Players} = require('./players');
-var {StartGame} = require('./game');
+var {JoinGame} = require('./game');
 
+console.log(`Server is started on Port ${port}`);
 
 let players = new Players();
 
@@ -28,12 +29,12 @@ io.on('connection', (socket) => {
   socket.on('enterRoom', (room) => {
     socket.join(room);
     players.getPlayer(socket.id).room = room;
+
     console.log(players.getPlayer(socket.id).name + ' \'in girdiği oda: ' + players.getPlayer(socket.id).room);
     socket.broadcast.emit('updateUserList', JSON.stringify(players.getAllPlayers()));
 
-    //if(players.getPlayerList(room).length > 1) {
-      StartGame(players.getPlayersInRoom(room), room, io);
-    //}
+    JoinGame(players.getPlayersInRoom(room), room, io);
+
   });
 
   socket.on('newMessage', (data) => {

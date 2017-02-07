@@ -5,7 +5,9 @@ class Players {
   }
 
   addPlayer (name, room, id) {
-    let player = {name, room, id};
+    let role = {dealer: false, bigBlind: false, smallBlind: false};
+    let cards = [];
+    let player = {name, room, id, role, cards};
     this.players.push(player);
     return player;
   }
