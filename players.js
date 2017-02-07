@@ -26,8 +26,12 @@ class Players {
   getPlayerList(room) {
     let players = this.players.filter((player) => player.room === room);
     let namesArray = players.map((player) => player.name);
-
     return namesArray;
+  }
+
+  getPlayersInRoom(room) {
+    let players = this.players.filter((player) => player.room === room);
+    return players;
   }
 
   getAllPlayers() {

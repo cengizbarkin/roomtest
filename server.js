@@ -1,9 +1,9 @@
-
 require('./config/config');
 const port = process.env.PORT;
-const io = require('socket.io')(process.env.PORT || 3000);
+const io = require('socket.io')(port || 3000);
 const shortId = require('shortid');
 var {Players} = require('./players');
+var {StartGame} = require('./game');
 
 
 let players = new Players();
@@ -30,13 +30,16 @@ io.on('connection', (socket) => {
     players.getPlayer(socket.id).room = room;
     console.log(players.getPlayer(socket.id).name + ' \'in girdiği oda: ' + players.getPlayer(socket.id).room);
     socket.broadcast.emit('updateUserList', JSON.stringify(players.getAllPlayers()));
+
+    //if(players.getPlayerList(room).length > 1) {
+      StartGame(players.getPlayersInRoom(room), room, io);
+    //}
   });
 
   socket.on('newMessage', (data) => {
     console.log('Oda ismi: ' + players.getRoomName(socket.id));
     io.to(players.getRoomName(socket.id)).emit('newMessage', data);
   });
-
 
   socket.on('disconnect', () => {
     console.log('Player Disconnect');
